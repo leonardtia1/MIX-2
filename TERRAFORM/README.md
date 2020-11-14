@@ -27,7 +27,7 @@
 
 
 
-
+```tf
 Example 1
 ===============================
 Maps are a way to create variables that are lookup tables. An example will show this best. Let's extract our AMIs into a map and add support for the us-west-2 region as well:
@@ -125,3 +125,4 @@ resource "aws_iam_user" "iamuser" {
   for_each = var.account_name
   name = "${each.value}"
 }
+```
