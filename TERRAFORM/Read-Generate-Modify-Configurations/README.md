@@ -1,2 +1,1 @@
-
-## Understanding Attributes and Output Values in Terraform
+## Read, Generate, Modify Configurations
