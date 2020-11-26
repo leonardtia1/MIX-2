@@ -1,5 +1,14 @@
 
 ## Terraform Lynda
+
+* [Advance Terraform Lynda](https://www.lynda.com/Terraform-tutorials/What-you-should-know/2823489/3129135-4.html)
+
+* [Learning Terraform Lynda](https://www.lynda.com/Developer-tutorials/Solution-AutoScaling-group/2823070/2272640-4.html)
+
+* [advanced-terraform Github Code](https://github.com/LinkedInLearning/advanced-terraform-2823489)
+
+
+
 https://www.bogotobogo.com/DevOps/Terraform/Terraform-VPC-Subnet-ELB-RouteTable-SecurityGroup-Apache-Server-1.php
 
 https://jee-appy.blogspot.com/2018/07/create-aws-infrastructure-with-terraform.html
