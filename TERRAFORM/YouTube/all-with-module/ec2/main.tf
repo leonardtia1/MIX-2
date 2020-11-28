@@ -38,9 +38,9 @@ resource "aws_instance" "my-test-instance" {
   count                  = 2
   ami                    = "${data.aws_ami.centos.id}"
   instance_type          = "${var.instance_type}"
-  key_name               = "${var.key_name.id}"
+  key_name               = "${aws_key_pair.mytest-key.id}"
   vpc_security_group_ids = ["${var.security_group}"]
-  // this will create 2 instance in 2 different subnet us-west-2a and us-west-2b. we use the element function to do that.
+  // we will use the element function top create the first ec2 in the first subnet and the second in the second subnet (us-west-2a and us-west-2b)
   subnet_id              = "${element(var.subnets, count.index )}"
   user_data              = "${data.template_file.init.rendered}"
 
