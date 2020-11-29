@@ -1,6 +1,20 @@
 
 ## Terraform Commannd
 
+
+### .gitignore file
+```
+*.terraform
+*.pem
+*.tfvars
+*.tfplan
+*.tfstate
+*.tfstate.backup
+*.lock.info
+.terraform
+.DS_Store
+```
+
 ### Download provider plugins to interact with the API
 ```
 terraform init
