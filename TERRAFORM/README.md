@@ -126,3 +126,6 @@ resource "aws_iam_user" "iamuser" {
   name = "${each.value}"
 }
 ```
+
+
+
