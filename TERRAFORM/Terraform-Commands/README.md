@@ -101,10 +101,121 @@ When we run terraform apply command, it refreshes the state file first to match 
 terraform refresh
 ```
 
+### The terraform workspace list command is used to list all existing workspaces.
+* The command will list all existing workspaces. The current workspace is indicated using an asterisk (*) marker.
+```
+terraform workspace list
+```
 
-a. terraform init
-b. terraform plan
-c terraform apply
+### The terraform workspace select command is used to choose a different workspace to use for further operations.
+```
+terraform workspace select [NAME]
+terraform workspace select default
+Switched to workspace "default".
+```
+
+### The terraform workspace new command is used to create a new workspace
+```
+terraform workspace new [NAME]
+terraform workspace new example
+Created and switched to workspace "example"!
+```
+
+### The terraform workspace delete command is used to delete an existing workspace.
+* -force - Delete the workspace even if its state is not empty. Defaults to false.
+```
+terraform workspace delete [NAME]
+terraform workspace delete example
+Deleted workspace "example".
+```
+
+### The terraform workspace show command is used to output the current workspace.
+* The command will display the current workspace.
+```tf
+terraform workspace show
+```
+
+### To deploy resources in the dev environment while using workspace
+```
+terraform apply -var-file=dev.tfvars
+OR 
+terraform apply -var-file=dev.tfvars
+```
+
+### To deploy resources in the prod environment while using workspace
+```
+terraform apply -var-file=prod.tfvars
+OR
+terraform apply -var-file prod.tfvars
+```
+
+### To destroy resources in the prod environment while using workspace
+```
+terraform destroy -var-file=prod.tfvars
+OR
+terraform destroy -var-file prod.tfvars
+```
+
+### To destroy resources in the dev environment while using workspace
+```
+terraform destroy -var-file=dev.tfvars
+OR
+terraform destroy -var-file dev.tfvars
+```
+
+### To plan resources in the dev environment while using workspace
+```
+terraform plan -var-file=dev.tfvars
+OR
+terraform plan -var-file dev.tfvars
+```
+
+### Rewrites config files to canonical format
+```
+terraform fmt
+``` 
+### Manually unlock the state for the defined configuration.
+* the force-unlock command requires a unique lock ID. Terraform will output this lock ID if unlocking fails
+```
+ terraform force-unlock LOCK_ID [DIR]
+```
+
+### Command: refresh
+* Update local state file against real resources
+```
+terraform refresh
+```
+
+### Command: taint
+* The terraform taint command manually marks a Terraform-managed resource as tainted, forcing it to be destroyed and recreated on the next apply.
+```
+terraform taint [options] address
+terraform taint aws_security_group.allow_all
+```
+
+### Command: untaint
+* Manually unmark a resource as tainted
+```
+terraform untaint [options] name
+terraform untaint aws_security_group.allow_all
+```
+
+### Command: validate
+* It is use to check if the configuration is valid
+```
+terraform validate
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 1. terraform destroy -target resource_type.resource_logical_name
@@ -144,102 +255,3 @@ c terraform apply
 15. terraform import -var-file=dmz.tfvars module.sg7.aws_security_group.security_group sg-00afc6e255cc55387 
 
 16. terraform plan -var-file=secrets.tfvars -var-file=dmz.tfvars -target=module.directory-service -out plan
-
-
-
-#############################################################################################################
-
-List the Terraform commands:
-
-terraform
-Common commands:
-apply: Builds or changes infrastructure
-console: Interactive console for Terraform interpolations
-destroy: Destroys Terraform-managed infrastructure
-fmt: Rewrites configuration files to canonical format
-get: Downloads and installs modules for the configuration
-graph: Creates a visual graph of Terraform resources
-import: Imports existing infrastructure into Terraform
-init: Initializes a new or existing Terraform configuration
-output: Reads an output from a state file
-plan: Generates and shows an execution plan
-providers: Prints a tree of the providers used in the configuration
-push: Uploads this Terraform module to Terraform Enterprise to run
-refresh: Updates local state file against real resources
-show: Inspects Terraform state or plan
-taint: Manually marks a resource for recreation
-untaint: Manually unmarks a resource as tainted
-validate: Validates the Terraform files
-version: Prints the Terraform version
-workspace: Workspace management
-
-Set up the environment:
-
-mkdir -p terraform/basics
-cd terraform/basics
-Create a Terraform script:
-
-vi main.tf
-main.tf contents:
-
-# Download the latest Ghost image
-resource "docker_image" "image_id" {
-  name = "ghost:latest"
-}
-Initialize Terraform:
-
-terraform init
-Validate the Terraform file:
-
-terraform validate
-List providers in the folder:
-
-ls .terraform/plugins/linux_amd64/
-List providers used in the configuration:
-
-terraform providers
-Terraform Plan:
-
-terraform plan
-Useful flags for plan:
--out=path: Writes a plan file to the given path. This can be used as input to the "apply" command.
--var 'foo=bar': Set a variable in the Terraform configuration. This flag can be set multiple times.
-
-Terraform Apply:
-
-terraform apply
-Useful flags for apply:
--auto-approve: This skips interactive approval of plan before applying.
--var 'foo=bar': This sets a variable in the Terraform configuration. It can be set multiple times.
-
-Confirm your apply by typing yes. The apply will take a bit to complete.
-
-List the Docker images:
-
-docker image ls
-Terraform Show:
-
-terraform show
-Terraform Destroy:
-
-terraform destroy
-Confirm your destroy by typing yes.
-
-Useful flags for destroys:
--auto-approve: Skip interactive approval of plan before applying.
-
-Re-list the Docker images:
-
-docker image ls
-Using a plan:
-
-terraform plan -out=tfplan
-Applying a plan:
-
-terraform apply tfplan
-Show the Docker Image resource:
-
-terraform show
-Destroy the resource once again:
-
-terraform destroy
