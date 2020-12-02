@@ -48,55 +48,6 @@ resource "aws_security_group" "prod_web" {
 }
 
 
-resource "aws_instance" "prod_web" {
-  // to launch 2 EC2 instances
-  count = 2
-
-  ami               = "ami-04bf6dcdc9ab498ca"
-  instance_type     = "t2.micro"
-  availability_zone = "us-east-1a"
-  key_name          = "jenkins-key"
-
-  vpc_security_group_ids = [ 
-    aws_security_group.prod_web.id
-   ]
-
-  user_data = <<-EOF
-                #!/bin/bash
-                sudo yum update -y
-                sudo yum install httpd -y
-                sudo systemctl start httpd
-                sudo systemctl enable httpd
-                cd /var/www/html
-
-                # liyeplimal website
-                wget https://linux-devops-course.s3.amazonaws.com/WEB+SIDE+HTML/www.liyeplimal.net.zip
-                unzip www.liyeplimal.net.zip
-                rm -rf www.liyeplimal.net.zip
-                cp -R www.liyeplimal.net/* .
-                rm -rf www.liyeplimal.net
-                EOF
-  tags = {
-    Name = "web-server"
-  }
-}
-
-resource "aws_eip_association" "prod_web" {
-  // we need to specify where to bound the eip because we 2 ec2 instances now.
-  // we can use the count index to choose the first instance.
-  // this is because you can assign the same eip to 2 instances. 	
-  instance_id   = aws_instance.prod_web[0].id
-  //nstance_id   = aws_instance.prod_web.0.id
-  allocation_id = aws_eip.prod_web.id
-}
-
-resource "aws_eip" "prod_web" {
-  tags = {
-	"Terraform" = "True"
-  }
-}
-
-
 resource "aws_default_subnet" "default_az1" {
   availability_zone = "us-east-1a"
   tags = {
@@ -111,12 +62,9 @@ resource "aws_default_subnet" "default_az2" {
   }
 }
 
-resource "aws_elb" "prod_web_elb" {
-	name = "prod-elb"
-	// * here is to use all instances
-	instances      = aws_instance.prod_web[*].id
-	//instances    = aws_instance.prod_web.*.
-	subnets        = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+resource "aws_elb" "prod_web" {
+	name            = "prod-elb"
+	subnets         = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
 	security_groups = [aws_security_group.prod_web.id]
 
 	listener {
@@ -129,4 +77,57 @@ resource "aws_elb" "prod_web_elb" {
 	  tags = {
 	"Terraform" = "True"
   }
+}
+
+
+resource "aws_launch_template" "prod_web" {
+  name_prefix       = "prod-web"
+  image_id          = "ami-04bf6dcdc9ab498ca"
+  instance_type     = "t2.micro"
+  key_name          = "jenkins-key"
+  
+  user_data = <<-EOF
+                #!/bin/bash
+                sudo yum update -y
+                sudo yum install httpd -y
+                sudo systemctl start httpd
+                sudo systemctl enable httpd
+                cd /var/www/html
+
+                # liyeplimal website
+                wget https://linux-devops-course.s3.amazonaws.com/WEB+SIDE+HTML/www.liyeplimal.net.zip
+                unzip www.liyeplimal.net.zip
+                rm -rf www.liyeplimal.net.zip
+                cp -R www.liyeplimal.net/* .
+                rm -rf www.liyeplimal.net
+               EOF        
+  tags = {
+    Name = "web-server"
+  }
+}
+
+resource "aws_autoscaling_group" "prod_web" {
+  //availability_zones  = ["us-east-1a","us-east-1b"]
+  // This is the list  of subnet ID to launch resources in.
+  vpc_zone_identifier = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+  desired_capacity    = 1
+  max_size            = 1
+  min_size            = 1
+
+  launch_template {
+    id      = aws_launch_template.prod_web.id
+    version = "$Latest"
+  }
+  tag {
+    key                 = "Terraform"
+    value               = "true"
+    // This means assign  this key when a new instance is launch
+    propagate_at_launch = true
+  }
+}
+
+// this is to attach auto-scalling to ELB
+resource "aws_autoscaling_attachment" "prod_web" {
+  autoscaling_group_name = aws_autoscaling_group.prod_web.id
+  elb                    = aws_elb.prod_web.id
 }
