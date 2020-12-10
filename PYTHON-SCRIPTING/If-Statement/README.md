@@ -13,7 +13,7 @@ a is grater b
 
 ### Exercise 2
 ```py
-c = 8
+c = 8                                                         
 d = 7
 if c < d:
     print("c is less than d")
@@ -28,7 +28,7 @@ c is geater than d
 
 ### Exercise 3
 ```py
-a = 6
+a = 6                                                                              
 b = 4
 if a < b:
     print("a is less than b")
@@ -41,7 +41,7 @@ else:
     print("a is definitely greater than b")
 
 # Output
-a is greater than b
+a is greater than b                                                                                                        
 a is definitely greater than b
 ```
 
@@ -56,8 +56,8 @@ elif a == b:
     print("this product is not good")
     print("we need to change it")
 else:
-    print("VERY GOOG")
-
+    print("VERY GOOG")                                                                                                                                                                                                                                 
+                    
 # Output
 BAD
 this product is not good
@@ -65,12 +65,12 @@ we need to change it
 ```
 
 ### Exercise 
-```py
+```py                                                                                                                                        
 a = 5
 b = 5
 if a < b:
     print("a is less than b")
-else: 
+else:                                                                             
     if a == b:
         print("a is equal to b")
     else:

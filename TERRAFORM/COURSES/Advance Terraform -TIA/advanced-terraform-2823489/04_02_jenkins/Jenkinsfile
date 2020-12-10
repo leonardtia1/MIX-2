@@ -33,10 +33,11 @@ node {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
                             dir('03_01_remotestate/remote_resources') {
-                                sh script: '../../terraform apply backend.tfplan'
+                                'sh script: '../../terraform apply backend.tfplan
                             }
         }
     }
+    // Initioalize the backend
     stage('Config-Init') {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
