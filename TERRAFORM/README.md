@@ -35,3 +35,6 @@
 * Launch the recording and start creating resources.
 * Stop the recording when the resources creation is done
 * Open Recorder dashboard and click Terraform to get the code
+
+
+

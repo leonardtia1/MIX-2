@@ -204,3 +204,35 @@ There are two major categories for terraform providers
 * Terraform has the capability to output the attribute of a resource with the output values.
 * An outputed attributes can not only be used for the user reference but it can also act as an input to other resources being created via terraform
 
+
+
+### Module Sources
+* Generic Git Repository. For example, to use HTTPS or SSH:
+```tf
+module "vpc" {
+  source = "git::https://example.com/vpc.git"
+}
+
+module "storage" {
+  source = "git::ssh://username@example.com/storage.git"
+}
+```  
+
+* The value of the ref argument can be any reference that would be accepted by the git checkout command, including branch and tag names.
+* By default, Terraform will clone and use the default branch (referenced by HEAD) in the selected repository. You can override this using the ref argument:
+
+```tf 
+module "vpc" {
+  source = "git::https://example.com/vpc.git?ref=v1.2.0"
+}
+```
+
+### Module Sources example
+* ref=development: we are refer to the development branch
+```tf
+source            = "../../terraform/ec2/"
+source = "github.com/leonardtia1/test-module/terraform/ec2"
+source = "git::https://github.com/leonardtia1/test-module.git"
+source = "git::https://github.com/leonardtia1/test-module.git?ref=development"
+source = "git::ssh://github.com/leonardtia1/test-module.git"
+```
