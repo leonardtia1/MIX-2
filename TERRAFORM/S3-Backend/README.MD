@@ -8,7 +8,7 @@ variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 variable "bucket_name" {
-  default = "red30-tfstate-tia-30"
+  default = "red30-tfstate"
 }
 
 # //////////////////////////////
@@ -17,15 +17,14 @@ variable "bucket_name" {
 provider "aws" {
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 # //////////////////////////////
 # TERRAFORM USER
 # //////////////////////////////
 data "aws_iam_user" "terraform" {
-  // This will retrive data from tia user that was create. This user will be used to create the bucket and dynamodb table.
-  user_name = "tia"
+  user_name = "terraform"
 }
 
 # //////////////////////////////
@@ -33,7 +32,6 @@ data "aws_iam_user" "terraform" {
 # //////////////////////////////
 resource "aws_s3_bucket" "red30-tfremotestate" {
   bucket = var.bucket_name
-  // This will destroy a bucket even if it content log files
   force_destroy = true
   acl = "private"
 
@@ -41,7 +39,7 @@ resource "aws_s3_bucket" "red30-tfremotestate" {
     enabled = true
   }
 
-  # Grant read/write access to the terraform user to the bucket
+  # Grant read/write access to the terraform user
   policy = <<EOF
 {
     "Version": "2008-10-17",
@@ -60,7 +58,6 @@ resource "aws_s3_bucket" "red30-tfremotestate" {
 EOF
 }
 
-// This is to block public access to the bucket
 resource "aws_s3_bucket_public_access_block" "red30-tfremotestate" {
   bucket = aws_s3_bucket.red30-tfremotestate.id
 
@@ -88,7 +85,6 @@ resource "aws_dynamodb_table" "tf_db_statelock" {
 # //////////////////////////////
 # IAM POLICY
 # //////////////////////////////
-// This grant terraform user access to read and write to the dynamodb table.
 resource "aws_iam_user_policy" "terraform_user_dbtable" {
   name = "terraform"
   user = data.aws_iam_user.terraform.user_name
@@ -173,10 +169,30 @@ module "vpc" {
 terraform init \
     -backend-config="bucket=red30-tfstate" \
     -backend-config="key=red30/ecommerceapp/app.state" \
+    -backend-config="region=us-east-2" \
+    -backend-config="dynamodb_table=red30-tfstatelock" \
+    -backend-config="access_key={ACCESS_KEY}" \
+    -backend-config="secret_key={SECRET_KEY}"
+```
+
+```
+terraform init \
+    -backend-config="bucket=red30-tfstate" \
+    -backend-config="key=red30/ecommerceapp/app.state" \ 
     -backend-config="region=us-east-1" \
     -backend-config="dynamodb_table=red30-tfstatelock" \
-    -backend-config="access_key=ACCESS_KEY" \
-    -backend-config="secret_key=SECRET_KEY"
+    -backend-config="access_key=AKIAXXXXXXXXXXXXXXXX" \
+    -backend-config="secret_key=123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
+```
+terraform init \
+    -backend-config="bucket=terraform-tia-backend" \
+    -backend-config="key=dev/app1/remotedemo.tfstate" \
+    -backend-config="region=us-east-1" \
+    -backend-config="dynamodb_table=terraform-s3-state-lock" \
+    -backend-config="access_key=AKIAXXXXXXXXXXXXXXXX" \
+    -backend-config="secret_key=123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```
 
 ## State Backend
@@ -204,4 +220,46 @@ access_key = "${var.aws_access_key}"
 secret_key = "${var.aws_secret_key}"
     }
 }
+```
+
+```tf
+# stage/frontend-app/main.tf
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state"
+    key            = "stage/frontend-app/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "my-lock-table"
+  }
+}
+```
+
+### Example
+```tf
+terraform {
+  backend "s3" {
+    access_key = " "
+    secret_key = " "
+    bucket = "terraform-tia-backend"
+    key    = "remotedemo.tfstate" // this is the tfstate file name
+    region = "us-east-1"
+    dynamodb_table = "terraform-s3-state-lock"
+  }
+}
+```
+```tf
+terraform {
+  backend "s3" {
+  }
+}
+```
+```
+terraform init \
+    -backend-config="bucket=terraform-tia-backend" \
+    -backend-config="key=remotedemo.tfstate" \
+    -backend-config="region=us-east-1" \
+    -backend-config="dynamodb_table=terraform-s3-state-lock" \
+    -backend-config="access_key=AKIAXXXXXXXXXXXXXXXX" \
+    -backend-config="secret_key=123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ```

@@ -1,19 +1,17 @@
 ### Default configuration (deploy in 1 region and  1 account)
 * config 
-```tf
+```t
 [default]
 output = json
 region = us-east-1
 ```
 * credentials
 ```tf
-[default]
-aws_access_key_id = AKIA3PBICDDCCEANXB56
-aws_secret_access_key = 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
+i
 ```
 
 ### Resources
-```tf
+```t
 provider "aws" {
   region     =  "us-east-1"
 }
@@ -24,7 +22,7 @@ resource "aws_eip" "myeip" {
 ```
 
 ### Deploy resources in 2 region
-```tf
+```t
 provider "aws" {
   region     =  "us-east-1"
 }
@@ -73,7 +71,7 @@ aws s3 ls --profile default
 aws s3 ls --profile account02
 
 * Default
-```tf
+```t
 provider "aws" {
   region     =  "us-east-1"
   profile    = "default"
@@ -85,7 +83,7 @@ resource "aws_eip" "myeip" {
 ```
 
 * Accont 02
-```tf
+```t
 provider "aws" {
   region     =  "us-east-1"
   profile    = "accont02"
@@ -97,7 +95,7 @@ resource "aws_eip" "myeip" {
 ```
 
 ### Deploy in multiple accounts at the same time
-```tf
+```t
 provider "aws" {
   region     =  "us-east-1"
   profile    = "default"
@@ -121,7 +119,7 @@ resource "aws_eip" "myeip02" {
 }
 ```
 
-```tf
+```t
 provider "aws" {
   alias      = "aws_default"
   region     =  "us-east-1"
@@ -144,5 +142,43 @@ resource "aws_eip" "myeip01" {
 resource "aws_eip" "myeip02" {
   vpc = "true"
   provider = aws.aws_default
+}
+```
+
+
+### backend
+```tf
+terraform {
+  backend "s3" {
+  }
+}
+```
+```t
+terraform init \
+    -backend-config="bucket=terraform-tia-backend" \
+    -backend-config="key=remotedemo.tfstate" \
+    -backend-config="region=us-east-1" \
+    -backend-config="dynamodb_table=terraform-s3-state-lock" \
+    -backend-config="access_key=AKIA3PBICDDCCEANXB56" \
+    -backend-config="secret_key=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"
+```
+
+```t
+terraform init \
+    -backend-config="bucket=terraform-tia-backend" \
+    -backend-config="key=dev/app1/remotedemo.tfstate" \
+    -backend-config="region=us-east-1" \
+    -backend-config="dynamodb_table=terraform-s3-state-lock" \
+    -backend-config="access_key=AKIA3PBICDDCCEANXB56" \
+    -backend-config="secret_key=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"
+```
+
+
+### Provider
+```t
+provider "aws" {
+  region = "us-east-1"
+  access_key = "AKIA3PBICDDCCEANXB56"
+  secret_key = "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"
 }
 ```
