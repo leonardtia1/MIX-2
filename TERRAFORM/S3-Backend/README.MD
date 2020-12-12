@@ -169,6 +169,7 @@ module "vpc" {
 ```
 
 ### Initialize the backend
+```
 terraform init \
     -backend-config="bucket=red30-tfstate" \
     -backend-config="key=red30/ecommerceapp/app.state" \
@@ -176,7 +177,7 @@ terraform init \
     -backend-config="dynamodb_table=red30-tfstatelock" \
     -backend-config="access_key=ACCESS_KEY" \
     -backend-config="secret_key=SECRET_KEY"
-
+```
 
 ## State Backend
 ```tf

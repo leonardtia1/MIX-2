@@ -23,7 +23,7 @@ resource "aws_eip" "myeip" {
 }
 ```
 
-### Deploy resources in 2 region
+### Deploy resources in 2 regions
 ```tf
 provider "aws" {
   region     =  "us-east-1"
