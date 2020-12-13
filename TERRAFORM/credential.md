@@ -57,6 +57,7 @@ region = us-east-1
 
 
 * credentials file
+```
 [default]
 aws_access_key_id = AKIAXXXXXXXXXXXXXXXX
 aws_secret_access_key = 123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -64,7 +65,7 @@ aws_secret_access_key = 123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 [account02]
 aws_access_key_id = AKIAXXXXXXXXXXXXXXXX
 aws_secret_access_key = 123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
+```
 * Test 
 aws s3 ls
 aws s3 ls --profile default
