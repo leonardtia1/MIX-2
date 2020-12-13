@@ -69,9 +69,11 @@ aws_access_key_id = AKIAXXXXXXXXXXXXXXXX
 aws_secret_access_key = 123XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 * Test 
+```
 aws s3 ls
 aws s3 ls --profile default
 aws s3 ls --profile account02
+```
 
 * Default
 ```tf

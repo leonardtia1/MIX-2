@@ -252,9 +252,8 @@ source = "git::https://github.com/leonardtia1/test-module.git?ref=development"
 source = "git::ssh://github.com/leonardtia1/test-module.git"
 ```
 
-### From each file
+### From each Module
 ```
-terragrunt init
 terragrunt plan
 terragrunt apply
 terragrunt output
@@ -263,12 +262,32 @@ terragrunt destroy
 
 ### From a root module
 ```
-terragrunt init
 terragrunt plan-all
 terragrunt apply-all
 terragrunt output-all
 terragrunt destroy-all
 ```
+
+
+
+
+### Scp command
+```
+scp -r tia@10.0.0.34:/home/tia/Downloads/terraform .
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 1. terraform destroy -target resource_type.resource_logical_name
