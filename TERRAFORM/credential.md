@@ -11,7 +11,7 @@ i
 ```
 
 ### Resources
-```t
+```tf
 provider "aws" {
   region     =  "us-east-1"
 }
@@ -22,7 +22,7 @@ resource "aws_eip" "myeip" {
 ```
 
 ### Deploy resources in 2 region
-```t
+```tf
 provider "aws" {
   region     =  "us-east-1"
 }
@@ -47,6 +47,7 @@ resource "aws_eip" "myeip1" {
 ### Deploy in multiple accounts
 
 * config file 
+```t
 [default]
 output = json
 region = us-east-1
@@ -54,6 +55,7 @@ region = us-east-1
 [account02]
 output = json
 region = us-east-1
+```
 
 
 * credentials file
@@ -72,7 +74,7 @@ aws s3 ls --profile default
 aws s3 ls --profile account02
 
 * Default
-```t
+```tf
 provider "aws" {
   region     =  "us-east-1"
   profile    = "default"
@@ -84,7 +86,7 @@ resource "aws_eip" "myeip" {
 ```
 
 * Accont 02
-```t
+```tf
 provider "aws" {
   region     =  "us-east-1"
   profile    = "accont02"
@@ -96,7 +98,7 @@ resource "aws_eip" "myeip" {
 ```
 
 ### Deploy in multiple accounts at the same time
-```t
+```tf
 provider "aws" {
   region     =  "us-east-1"
   profile    = "default"
@@ -120,7 +122,7 @@ resource "aws_eip" "myeip02" {
 }
 ```
 
-```t
+```tf
 provider "aws" {
   alias      = "aws_default"
   region     =  "us-east-1"
@@ -176,7 +178,7 @@ terraform init \
 
 
 ### Provider
-```t
+```tf
 provider "aws" {
   region = "us-east-1"
   access_key = "AKIAXXXXXXXXXXXXXXXX"
