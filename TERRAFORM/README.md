@@ -30,6 +30,15 @@
 
 * [Console Recorder for AWS](https://chrome.google.com/webstore/detail/console-recorder-for-aws/ganlhgooidfbijjidcpkeaohjnkeicba?hl=en)
 
+* [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)
+
+* [Hands-On Infrastructure Automation with Terraform on AWS [Video]](hhttps://www.packtpub.com/big-data-and-business-intelligence/hands-infrastructure-automation-terraform-aws-video)
+
+* [Getting Started with Terraform - Second Edition [Video]](https://www.packtpub.com/networking-and-servers/getting-started-terraform-second-edition)
+
+* [VPC Solutions with EC2 for Production: AWS with Terraform [Video]](https://www.packtpub.com/application-development/vpc-solutions-ec2-production-aws-terraform-video)
+
+
 ### Working with Console Recorder for AWS
 * Use the link above to add the extent to google
 * Launch the recording and start creating resources.
@@ -38,3 +47,8 @@
 
 
 
+
+
+=================================================================================
+ * [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)      
+=================================================================================

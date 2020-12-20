@@ -220,6 +220,16 @@ terraform untaint aws_security_group.allow_all
 terraform validate
 ```
 
+### Force and destroy resources (example: s3 with content)
+```
+terraform destroy --force
+```
+
+### Plan destroy
+```
+terraform plan -destroy
+```
+
 
 ### Module Sources
 * Generic Git Repository. For example, to use HTTPS or SSH:
@@ -273,7 +283,7 @@ terragrunt destroy-all
 
 ### Scp command
 ```
-scp -r tia@10.0.0.34:/home/tia/Downloads/terraform .
+ scp -r tia@10.0.0.34:/home/tia/Downloads/terraform-jed .
 ```
 
 
