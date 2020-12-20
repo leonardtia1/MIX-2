@@ -25,19 +25,23 @@
 
 * [terraform-course-examples](https://github.com/WillBrock/terraform-course-examples/tree/master/getting-started)
 
+* [Hands-on-Infrastructure-Automation-with-Terraform-on-AWS](https://github.com/PacktPublishing/Hands-on-Infrastructure-Automation-with-Terraform-on-AWS)
+
+
+### PROJECT
+* [terragrunt-example-modules](https://github.com/slitsevych/terragrunt-example-modules)
+
+* [terragrunt-example-live](https://github.com/slitsevych/terragrunt-example-live)
+
+* [terragrunt-infrastructure-live-example](https://github.com/gruntwork-io/terragrunt-infrastructure-live-example)
+
+* [terragrunt-infrastructure-modules-example](https://github.com/gruntwork-io/terragrunt-infrastructure-modules-example)
+
+
 ### Resources
 * [registry.terraform](https://registry.terraform.io/)
 
 * [Console Recorder for AWS](https://chrome.google.com/webstore/detail/console-recorder-for-aws/ganlhgooidfbijjidcpkeaohjnkeicba?hl=en)
-
-* [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)
-
-* [Hands-On Infrastructure Automation with Terraform on AWS [Video]](hhttps://www.packtpub.com/big-data-and-business-intelligence/hands-infrastructure-automation-terraform-aws-video)
-
-* [Getting Started with Terraform - Second Edition [Video]](https://www.packtpub.com/networking-and-servers/getting-started-terraform-second-edition)
-
-* [VPC Solutions with EC2 for Production: AWS with Terraform [Video]](https://www.packtpub.com/application-development/vpc-solutions-ec2-production-aws-terraform-video)
-
 
 ### Working with Console Recorder for AWS
 * Use the link above to add the extent to google
@@ -46,9 +50,13 @@
 * Open Recorder dashboard and click Terraform to get the code
 
 
+* [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)
+
+* [Hands-On Infrastructure Automation with Terraform on AWS Video](https://www.packtpub.com/big-data-and-business-intelligence/hands-infrastructure-automation-terraform-aws-video)
+
+* [Getting Started with Terraform - Second Edition [Video]](https://www.packtpub.com/networking-and-servers/getting-started-terraform-second-edition)
+
+* [VPC Solutions with EC2 for Production: AWS with Terraform [Video]](https://www.packtpub.com/application-development/vpc-solutions-ec2-production-aws-terraform-video)
 
 
 
-=================================================================================
- * [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)      
-=================================================================================
