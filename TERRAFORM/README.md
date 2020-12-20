@@ -43,12 +43,6 @@
 
 * [Console Recorder for AWS](https://chrome.google.com/webstore/detail/console-recorder-for-aws/ganlhgooidfbijjidcpkeaohjnkeicba?hl=en)
 
-### Working with Console Recorder for AWS
-* Use the link above to add the extent to google
-* Launch the recording and start creating resources.
-* Stop the recording when the resources creation is done
-* Open Recorder dashboard and click Terraform to get the code
-
 
 * [Awesome Terraform Github](https://github.com/shuaibiyy/awesome-terraform)
 
@@ -58,5 +52,11 @@
 
 * [VPC Solutions with EC2 for Production: AWS with Terraform [Video]](https://www.packtpub.com/application-development/vpc-solutions-ec2-production-aws-terraform-video)
 
+
+### Working with Console Recorder for AWS
+* Use the link above to add the extent to google
+* Launch the recording and start creating resources.
+* Stop the recording when the resources creation is done
+* Open Recorder dashboard and click Terraform to get the code
 
 
