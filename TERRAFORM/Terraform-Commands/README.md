@@ -220,6 +220,11 @@ terraform untaint aws_security_group.allow_all
 terraform validate
 ```
 
+### fmt command (to reformat code)
+```
+terraform fmt
+```
+
 ### Force and destroy resources (example: s3 with content)
 ```
 terraform destroy --force

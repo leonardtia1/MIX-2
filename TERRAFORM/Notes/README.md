@@ -236,3 +236,50 @@ source = "git::https://github.com/leonardtia1/test-module.git"
 source = "git::https://github.com/leonardtia1/test-module.git?ref=development"
 source = "git::ssh://github.com/leonardtia1/test-module.git"
 ```
+
+### Counts and counting
+```tf
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "web" {
+  ami                         = "${lookup(var.ami, var.region)}"
+  instance_type               = "${var.instance_type}"
+  key_name                    = "${var.key_name}"
+  subnet_id                   = "${module.vpc.public_subnet_id}"
+  associate_public_ip_address = true
+  user_data                   = "${file("files/web_bootstrap.sh")}"
+  vpc_security_group_ids = [
+    "${aws_security_group.web_host_sg.id}",
+  ]
+  count = 2
+}
+```
+* It’ll create each resource with the index of the count suffixed to the resource name, like so:
+```tf
+aws_instance.web.0
+aws_instance.web.1
+```
+* To access the id of one of these instances we’d use:
+```tf
+aws_instance.web.0.id
+```
+
+### Sets of counted resources using splat
+* Sometimes we want to refer to the set of resources created via a count. To do this Terraform has a splat syntax: *. This allows us to refer to all of these resources in a variable. Let’s see how that works in the aws_elb.web resource.
+```tf
+resource "aws_elb" "web" {
+  name            = "web-elb"
+  subnets         = ["${module.vpc.public_subnet_id}"]
+  security_groups = ["${aws_security_group.web_inbound_sg.id}"]
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+  instances = ["${aws_instance.web.*.id}"]
+}
+```
+

@@ -27,6 +27,12 @@
 
 * [Hands-on-Infrastructure-Automation-with-Terraform-on-AWS](https://github.com/PacktPublishing/Hands-on-Infrastructure-Automation-with-Terraform-on-AWS)
 
+* [terraform-up-and-running-code](https://github.com/brikis98/terraform-up-and-running-code)
+
+* [easyawslearn/Terraform-Tutorial](https://github.com/easyawslearn/Terraform-Tutorial)
+
+* [The Terraform Book code repository](https://github.com/turnbullpress/tfb-code)
+
 
 ### PROJECT
 * [terragrunt-example-modules](https://github.com/slitsevych/terragrunt-example-modules)
