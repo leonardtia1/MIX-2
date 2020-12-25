@@ -22,3 +22,32 @@ https://github.com/cloudposse/terraform-example-module
 https://github.com/gruntwork-io/intro-to-terraform
 
 https://github.com/egarelnabi/nested-terraform-modules
+
+
+## Terragrunt Commands
+
+### From each Module
+```
+terragrunt init
+terragrunt plan
+terragrunt apply
+terragrunt destroy
+```
+
+### From a root module
+```
+terragrunt plan-all
+terragrunt apply-all
+terragrunt destroy-all
+```
+
+
+
+
+### Scp command
+```
+ scp -r tia@10.0.0.34:/home/tia/Downloads/terraform-jed .
+ scp -r tia@10.0.0.34:/home/tia/Downloads/project01 .
+```
+
+

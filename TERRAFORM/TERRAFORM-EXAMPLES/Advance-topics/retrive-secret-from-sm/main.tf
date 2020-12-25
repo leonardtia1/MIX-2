@@ -4,7 +4,7 @@ provider "aws" {
 
 # Get secret information for RDS password
 data "aws_secretsmanager_secret" "rds_password" {
-  name = "dev-mam-rds-password"
+  name = "prod-mam-rds-password"
 }
 
 data "aws_secretsmanager_secret_version" "rds_password" {
@@ -18,7 +18,7 @@ output "rds_password" {
 
 # Get secret information for RDS username
 data "aws_secretsmanager_secret" "rds_username" {
-  name = "dev-mam-rds-username"
+  name = "prod-mam-rds-username"
 }
 
 

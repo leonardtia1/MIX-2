@@ -235,6 +235,12 @@ terraform destroy --force
 terraform plan -destroy
 ```
 
+### Save a plan
+```
+terraform plan -out example.tfplan
+terraform apply example.tfplan
+```
+
 
 ### Module Sources
 * Generic Git Repository. For example, to use HTTPS or SSH:

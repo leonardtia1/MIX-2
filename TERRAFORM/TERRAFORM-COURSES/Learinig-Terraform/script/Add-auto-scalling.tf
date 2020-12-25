@@ -65,9 +65,9 @@ resource "aws_default_subnet" "default_az2" {
 resource "aws_elb" "prod_web_elb" {
 	name = "prod-elb"
 	// * here is to use all instances
-	instances      = aws_instance.prod_web[*].id
-	//instances    = aws_instance.prod_web.*.
-	subnets        = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+	instances       = aws_instance.prod_web[*].id
+	//instances     = aws_instance.prod_web.*.
+	subnets         = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
 	security_groups = [aws_security_group.prod_web.id]
 
 	listener {
