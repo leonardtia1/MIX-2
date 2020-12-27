@@ -80,11 +80,45 @@ terraform destroy
 terraform destroy --target <resource name>
 terraform destroy --target aws_security_group.allow-web
 ```
+### Lifecycle with destroy
 
-### To deploy a particular resource
+* if lifecycle is set to `true` for any resources in terraform, it will not be deleted while running terraform destroy. 
+* it most be set to `false` before you can destroy it.
+* This just prevent someone from deleting the resource on the console because if we comment the resource or remove it from the configuration file and run `terraform destroy`, it will still destroy it.
+
+```tf
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_eip" "name" {
+  vpc      = true
+  lifecycle {
+    prevent_destroy = "true"
+  }
+}
 ```
-terraform apply --target <resource name>
-terraform apply --target aws_security_group.allow-web
+
+```tf
+provider "aws" {
+  region = "us-east-1"
+}
+
+/*
+resource "aws_eip" "name" {
+  vpc      = true
+  lifecycle {
+    prevent_destroy = "true"
+  }
+}
+*/
+```
+OR
+
+```tf
+provider "aws" {
+  region = "us-east-1"
+}
 ```
 
 ### Comment in terraform
@@ -149,7 +183,7 @@ Deleted workspace "example".
 terraform workspace show
 ```
 
-### To deploy resources in the dev environment while using workspace
+### To deploy resources in the dev environment while using workspace.
 ```
 terraform apply -var-file=dev.tfvars
 OR 
@@ -240,6 +274,32 @@ terraform plan -destroy
 terraform plan -out example.tfplan
 terraform apply example.tfplan
 ```
+
+### Variables
+* Terraform will automatically loads all files which match `terraform.tfvars` or `*.tfvars` or `.auto.tfvars` from the current directory.
+* Other files can be passed explicitly using `-var-file` flag
+```tf
+terraform plan -var-file=secrets.tfvars -var-file=dmz.tfvars -target=module.directory-service -out plan
+```
+
+### To set auto-approve of apply and destroy for the current section
+```tf
+export TF_CLI_ARGS_destroy="-auto-approve"
+export TF_CLI_ARGS_apply="-auto-approve"
+```
+
+### To remove auto-approve of apply and destroy for the current section
+```tf
+export TF_CLI_ARGS_destroy=" "
+export TF_CLI_ARGS_apply=" "
+```
+### Terraform output (this will display all the outputs in the state file)
+```
+terraform output
+```
+
+export TF_PLUGIN_CACHE_DIR="$HOME/.terraform.d/plugin-cache"
+
 
 
 ### Module Sources
