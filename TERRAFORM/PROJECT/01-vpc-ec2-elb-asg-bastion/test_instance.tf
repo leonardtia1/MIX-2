@@ -1,11 +1,9 @@
-
 resource "aws_launch_configuration" "test" {
-/*
-- Launch Configurations cannot be updated after creation with the AWS API.
-- In order to update a Launch Configuration, Terraform will destroy the existing resource and create a replacement.
-- We're only setting the name_prefix here,
-- Terraform will add a random string at the end to keep it unique.
-*/
+#Launch Configurations cannot be updated after creation with the AWS API.
+#In order to update a Launch Configuration, Terraform will destroy the existing resource and create a replacement.
+#We're only setting the name_prefix here,
+#Terraform will add a random string at the end to keep it unique.
+
 
   name_prefix = "${var.tags.environment}-test-launch-configuration"
 
@@ -67,6 +65,12 @@ resource "aws_security_group_rule" "allow_all_ssh_test" {
   protocol          = "tcp"
   cidr_blocks       = aws_subnet.public.*.cidr_block
   security_group_id = "${aws_security_group.test.id}"
+  # This will allow port 22 from all public subnet
+  #22	TCP	10.0.0.0/24	test SG20201228111157245100000001
+  #22	TCP	10.0.1.0/24	test SG20201228111157245100000001
+  #22	TCP	10.0.2.0/24	test SG20201228111157245100000001
+  #8 - 0	ICMP	0.0.0.0/0	test SG20201228111157245100000001
+
 }
 
 resource "aws_security_group_rule" "allow_all_outbound_test" {
@@ -86,4 +90,3 @@ resource "aws_security_group_rule" "allow_ping" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = "${aws_security_group.test.id}"
 }
-
