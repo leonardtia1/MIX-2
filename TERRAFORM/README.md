@@ -35,6 +35,12 @@
 
 * [quickbooks2018/Terraform-V-12-Good-Repo](https://github.com/quickbooks2018/Terraform-V-12/tree/master/terraform.v12)
 
+* [Deep-Dive-Terraform](https://github.com/ned1313/Deep-Dive-Terraform)
+
+* [Deep-Dive-Terraform-Module](https://github.com/joethespindler/Deep-Dive-Terraform)
+
+
+
 ### PROJECT
 * [terragrunt-example-modules](https://github.com/slitsevych/terragrunt-example-modules)
 
