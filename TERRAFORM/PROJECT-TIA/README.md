@@ -62,3 +62,6 @@ yum update -y
 yum install -y tree
 ping -c5 www.google.com
 ```
+
+### RDS
+* Put the DB on the public subnet so the you can test the connection
