@@ -39,6 +39,8 @@
 
 * [Deep-Dive-Terraform-Module](https://github.com/joethespindler/Deep-Dive-Terraform)
 
+* [hands-on.cloud-TERRAFORM](https://hands-on.cloud/categories/terraform/)
+
 
 
 ### PROJECT
