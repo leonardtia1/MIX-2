@@ -41,6 +41,8 @@
 
 * [hands-on.cloud-TERRAFORM](https://hands-on.cloud/categories/terraform/)
 
+* [terraform-aws-postgresql-rds](https://github.com/azavea/terraform-aws-postgresql-rds)
+
 
 
 ### PROJECT

@@ -369,5 +369,160 @@ bucket = format("%s-repository-%s-%s-%s", var.tags["environment"], var.tags["pro
 ```
 * "%s-repository-%s-%s-%s-%s" for 5 args  and so on
 
+### Null in terraform
+* null: a value that represents absence or omission. If you set an argument of a resource or module to `null`, Terraform behaves as though you had completely omitted it. null is most useful in conditional expressions.
+
+### Condition
+* Create allocated_storage only if snapshot_identifier is set to null, else, set allocated_storage to null
+```tf
+variable "_rds_defaults" {
+  description = "Default rds properties, if not overridden"
+  type        = map(string)
+  default = {
+    snapshot_identifier         = null
+    allocated_storage           = "250"
+    max_allocated_storage       = "2" # multiplier for allocated_storage
+  }
+}
+```
+
+* Create max_allocated_storage only if snapshot_identifier is set to null. max_allocated_storage = allocated_storage x 2 = 250 x 2 = 500. else, set allocated_storage to null
+```tf
+max_allocated_storage = local.rds["snapshot_identifier"] == null ? local.rds["allocated_storage"] * local.rds["max_allocated_storage"] : null
 
 
+variable "_rds_defaults" {
+  description = "Default rds properties, if not overridden"
+  type        = map(string)
+  default = {
+    snapshot_identifier         = null
+    allocated_storage           = "250"
+    max_allocated_storage       = "2" # multiplier for allocated_storage
+  }
+}
+```
+* if default is set to null, do not create rds_password. if default is not set to null, create `1` rds_password because `count` is `1`. RDS PASSWORD will be created here because default is not set to `null` or equal `null`.
+```tf
+count       = var.rds_password != null ? 1 : 0
+
+variable "rds_password" {
+  type        = string
+  description = "Master DB password for RDS. Should not be placed in source code. Either use terraform.tfvars or enter when running Terraform."
+  default     = "DefaultPassword!23"
+}
+```
+
+* create isprod if t_environment is set to PRD. Else, do not create isprod. isprod will not be created because t_environment = "DEV". it will be create only if t_environment = "PRD"
+```tf
+isprod              = local.tags["t_environment"] == "PRD" ? true : false
+
+ tags = {
+      environment   = "${local.common.environment}"
+      t_environment = "DEV" # Must be one of the following values - DEV, DR, POC, PRD, PRF, QA, STG, TST. Pick the one that matches your environment the closest.
+    }
+```
+
+* If the variable kms_arn is not set to `null`, create it. Else set it to `null` or do not create it. kms_arn will not be create because it is set to `null` already.
+```tf
+kms_key_id  = var.kms_arn != null ? var.kms_arn : null
+
+variable "panel_key" {
+  type        = string
+  default     = null
+}
+```
+* tobool : it use to convert element init boolean. if boolean instance_start = true, execute local.bastion["instance_count"]. else, do nothing or false
+```tf
+bastion_instance_start = tobool(local.bastion["instance_start"]) == true ? local.bastion["instance_count"] : 0
+```
+
+* If condition is true then the result is `true_val`. If condition is false then the result is `false_val`.
+```tf
+condition ? true_val : false_val
+```
+
+* If `var.a` is an empty string then the result is `"default-a"`, but otherwise it is the actual value of `var.a.`
+```tf
+var.a != "" ? var.a : "default-a"
+```
+
+* Never use the `== or !=` operators to compare Boolean values, since these perform string comparisons, and cannot handle the multiple possible synonyms of true and false. For example, instead of:
+```tf
+var.x == true ? var.y : var.z
+```
+* simply use:
+```tf
+var.x ? var.y : var.z
+```
+
+```tf
+provider "aws" {
+  region = "us-east-1"
+}
+
+variable "create_id" {
+  default = true
+}
+
+resource "random_id" "id1" {
+  # resource wil be created because 1 is true
+  count = "${var.create_id ? "1" : "0"}"
+  byte_length = 2
+}
+
+resource "random_id" "id2" {
+# resource wil be created because 0 is is false
+count = "${var.create_id ? "0" : "1"}"
+  byte_length = 2
+}
+
+#RESULT
+Terraform will perform the following actions:
+
+  # random_id.id1[0] will be created
+  + resource "random_id" "id1" {
+      + b64_std     = (known after apply)
+      + b64_url     = (known after apply)
+      + byte_length = 2
+      + dec         = (known after apply)
+      + hex         = (known after apply)
+      + id          = (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+```
+
+### Resource: aws_db_instance
+- [Provides an RDS instance resource](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance#allocated_storage)
+
+- `allow_major_version_upgrade` - (Optional) Indicates that major version upgrades are allowed. 
+
+- `auto_minor_version_upgrade` - (Optional) Indicates that minor engine upgrades will be applied automatically to the DB instance during the maintenance window. Defaults to true.
+
+- `backup_retention_period` - (Optional) The days to retain backups for. Must be between 0 and 35. Must be greater than 0 if the database is used as a source for a Read Replica. See Read Replica.
+
+- `apply_immediately`- (Optional) Specifies whether any database modifications are applied immediately, or during the next maintenance window. Default is false. using apply_immediately can result in a brief downtime as the server reboots.
+
+- `backup_window` - (Optional) The daily time range (in UTC) during which automated backups are created if they are enabled. Example: "09:46-10:16". Must not overlap with maintenance_window
+
+- `delete_automated_backups` - (Optional) Specifies whether to remove automated backups immediately after the DB instance is deleted. Default is true.
+
+- `deletion_protection` - (Optional) If the DB instance should have deletion protection enabled. The database can't be deleted when this value is set to true. The default is false.
+
+- `final_snapshot_identifier` - (Optional) The name of your final DB snapshot when this DB instance is deleted. Must be provided if skip_final_snapshot is set to false.
+
+- `enabled_cloudwatch_logs_exports` - (Optional) Set of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values (depending on engine). MySQL and MariaDB:`(audit, error, general, slowquery)`. PostgreSQL: `(postgresql, upgrade)`. MSSQL: `(agent , error. Oracle: alert, audit, listener, trace)`.
+```tf
+enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
+```
+
+### Splat Expressions
+* If `var.list` is a list of objects that all have an attribute id, then a list of the ids could be produced with the following for expression:
+```tf
+[for o in var.list : o.id]
+```
+* This is equivalent to the following splat expression:
+```tf
+var.list[*].id
+```

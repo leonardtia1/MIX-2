@@ -9,6 +9,14 @@
 * create a folder call terraform on the C drive and paste the terraform.exe
 * Type `env` on windows search bar and at it to path `C:\terraform`
 
+### INSTALLATION ON WINDOWS TERRAGRUNT:
+* [Download](https://github.com/gruntwork-io/terragrunt/releases)
+* create a folder call terragrunt on the C drive and paste the terragrunt.exe
+* Type `env` on windows search bar and at it to path `C:\terragrunt`
+```
+terragrunt --version
+```
+
 ### INSTALLATION ON Linux
 * 1- Download the binary terraform file.
 * 2- Move it into a rigth path.
