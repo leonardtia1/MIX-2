@@ -68,16 +68,10 @@ cd kubectlbinary
 curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.17.9/2020-08-04/bin/linux/amd64/kubectl
 ```
 
-### Provide execute permissions
+### Provide execute permissions and move it into path
 ```sh
 chmod +x ./kubectl
-```
-
-### Set the Path by copying to user Home Directory
-```sh
-mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-echo 'export PATH=$PATH:$HOME/bin' >> ~/.bash_profile
-source ~/.bash_profile
+mv ./kubectl /usr/local/bin
 ```
 
 ### Verify the kubectl version
@@ -345,7 +339,7 @@ Use putty
 eksctl get clusters
 
 # Capture Node Group name
-eksctl get nodegroup --cluster=<clusterName>
+eksctl get nodegroup Vanessa12345H--cluster=<clusterName>
 eksctl get nodegroup --cluster=eksdemo1
 
 # Delete Node Group
