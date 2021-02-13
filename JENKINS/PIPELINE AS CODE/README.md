@@ -1,10 +1,10 @@
 https://gitlab.com/nanuchi/techworld-js-docker-demo-app/-/tree/dev
 
 
-### jenkins configurations as code plugin
+## jenkins configurations as code plugin
 Configuration as Code
 
-### jenkins configurations as code links
+## jenkins configurations as code links
 * [Configuration as Code](https://plugins.jenkins.io/configuration-as-code/)
 
 * [Jenkins Pipeline Documentation](https://anoni.sh/jenkins-pipeline)
@@ -17,7 +17,7 @@ https://github.com/devbyaccident/demo-shared-pipeline
 
 https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 
-### Some plugins in Jenkins
+## Some plugins in Jenkins
 - **Config AutoRefresh:** the Config AutoRefresh Plugin provides a way to configure the auto-refresh rate from the Jenkins UI.
 - configuration-as-code
 - docker-build-publish
@@ -31,7 +31,7 @@ https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 - Credentials
 - Credentials Binding Plugin
 
-### Get the list of all the plugins
+## Get the list of all the plugins
 * [jenkins-url][/script]
 * Example: http://10.0.0.3:8080/script
 * Hit enter, paste the code below and run
@@ -45,7 +45,7 @@ pluginList.sort { it.getShortName() }.each{
 ```
 
 
-### Declarative pipeline Vs Scripted Pipeline
+## Declarative pipeline Vs Scripted Pipeline
 - A declarative pipeline has a structure defined already that needs to be followed while scripting pipeline is a groovy script that does not have a structure. 
 
 - Declarative pipeline start with the **pipeline definition** while scripted pipeline start with **node definition**
@@ -64,7 +64,7 @@ pipeline {
 ```
 
 
-### Running hello world
+## Running hello world
 - **Agent** indicates that Jenkins should allocate an executor or slave to run the pipeline.
 - **Stage:** it is a section of the pipeline such as build, test and so on
 - **Steps:** it is the specific instruction to execute the stage.
@@ -84,7 +84,7 @@ pipeline {
 ```
 
 
-### Pipeline structure
+## Pipeline structure
 ```groovy
 pipeline {
     agent any
@@ -124,7 +124,7 @@ pipeline {
 ```
 
 
-### Running a shell script in the pipeline
+## Running a shell script in the pipeline
 ```groovy
 pipeline {
     agent any
@@ -189,7 +189,7 @@ pipeline {
 ```
 
 
-### post action
+## post action
 **Post:**
 - This helps execute some logic after all stages are executed.
 - It can be very helpful to notify the team about the status of the build such as sending **out notification**.
@@ -251,7 +251,7 @@ pipeline {
 ```
 
 
-### When condition
+## When condition
 * This will skip the deployment if the build failed. The deploy stage will run because the build stage will not failed
 ```groovy
 pipeline {
@@ -382,7 +382,7 @@ pipeline {
 ```
 
 
-### Email Notification or Handling Failures
+## Email Notification or Handling Failures
 * This will not send out notification because the build will not failed
 
 ```groovy
@@ -490,7 +490,7 @@ pipeline {
 ```
 
 
-### User define variables
+## User define variables
 * It most be in double quote like echo "Building version **${NEW_VERSION}**" and not echo 'Building version $**{NEW_VERSION}**'
 ```groovy
 pipeline {
@@ -511,7 +511,7 @@ pipeline {
 ```
 
 
-### Build in variables or environment variables
+## Build in variables or environment variables
 * [jenkins-url][/env-vars.html/]
 * Example: http://10.0.0.3:8080/env-vars.html/
 
@@ -540,7 +540,7 @@ pipeline {
 ```
 
 
-### Using multiple agents
+## Using multiple agents
 * In this example, job will run on any available agent including **Jenkins master server.**
 
 ```groovy
@@ -716,7 +716,7 @@ pipeline {
 ```
 
 
-### Get credentials values
+## Get credentials values
 * add _USR and _PSW on the variable that you set such as `ANSIBLE_HOST_USR` and `ANSIBLE_HOST_PSW`
 
 ```groovy
@@ -753,7 +753,7 @@ pipeline {
 ```
 
 
-### Check out the code
+## Check out the code
 ```groovy
 pipeline {
     agent any
@@ -768,7 +768,7 @@ pipeline {
 ```
 
 
-### Condictions
+## Condictions
 ```groovy
 BRANCH_NAME == "dev" || BRANCH_NAME == "prod"
 BRANCH_NAME == "dev" || BRANCH_NAME == "prod" || BRANCH_NAME == "qa"
