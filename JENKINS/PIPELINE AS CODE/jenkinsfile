@@ -1,0 +1,77 @@
+    agent any
+    environment {
+      NEW_VERSION = '1.3.0'
+      SERVER_CREDENTIALS = credentials('ansadmin-host')
+    }
+    stages {
+        
+        stage('Build') {
+            steps {
+               echo "Building the application........" 
+               echo "Building version ${NEW_VERSION}" 
+            }
+        }
+        stage('deploy') {
+          steps {
+            sh('ls -la ${SERVER_CREDENTIALS}')
+          }
+        }
+    }
+}
+
+### 
+Credentials
+Credentials Binding Plugin
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Chechout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/dev']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/leonardtia1/jenkins.git']]])
+            }
+        }
+		stage {
+			
+		}
+    }
+}
+            
+
+// Declarative //
+pipeline {
+	agent any
+	stages {
+		stage('Test') {
+			steps {
+				sh 'cat /etc/*release'
+			}
+		}
+	}
+	post {
+		failure {
+			mail bcc: '', body: '''Hi 
+			Please Check Jenkins the job failed.''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job Notification', to: 'tiajearad44@gmail.com'
+		}
+	}
+}
+
+
+// Declarative //
+pipeline {
+	agent any
+	stages {
+		stage('Test') {
+			steps {
+				sh 'cat /etc/*release....'
+			}
+		}
+	}
+	post {
+		failure {
+			mail bcc: '', body: '''Hi 
+			Please Check Jenkins the job failed.''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job Notification', to: 'tiajearad44@gmail.com'
+		}
+	}
+}
