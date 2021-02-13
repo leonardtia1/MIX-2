@@ -148,14 +148,14 @@ pipeline {
 ```
 
 ### post action
-**Post**
+**Post:**
 - This helps execute some logic after all stages are executed.
 - It can be very helpful to notify the team about the status of the build such as sending out notification.
 
 **We have 3 post build condition:**
-    **- Always:** this will always execute no matter if the build failed or succeed.
-    **- Success:** this will execute only if the build succeeded
-    **- Failure:** this will execute only if the build failed
+    - **Always:** this will always execute no matter if the build failed or succeed.
+    - **Success:** this will execute only if the build succeeded.
+    - **Failure:** this will execute only if the build failed.
 
 ```s
 pipeline {
