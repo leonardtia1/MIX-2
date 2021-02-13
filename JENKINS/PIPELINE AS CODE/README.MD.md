@@ -20,16 +20,16 @@ https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 ### Declarative pipeline Vs Scripted Pipeline
 - A declarative pipeline has a structure defined already that needs to be followed while scripting pipeline is a groovy script that does not have a structure. 
 
-- Declarative pipeline start with the pipeline definition while scripted pipeline start with node definition
+- Declarative pipeline start with the **pipeline definition** while scripted pipeline start with **node definition**
 
 
 
 
 ### Running hello world
-*-Agent* indicates that Jenkins should allocate an executor or slave to run the pipeline.
-*- Stage:* it is a section of the pipeline such as build, test and so on
-*- Steps:* it is the specific instruction to execute the stage.
-*- Pipeline:* it is a series of tasks required to build, test and deploy an application from source control into dev, qa and prod.
+- **Agent** indicates that Jenkins should allocate an executor or slave to run the pipeline.
+- **Stage:** it is a section of the pipeline such as build, test and so on
+- **Steps:** it is the specific instruction to execute the stage.
+- **Pipeline:** it is a series of tasks required to build, test and deploy an application from source control into dev, qa and prod.
 
 ```s
 pipeline {
@@ -150,12 +150,12 @@ pipeline {
 ### post action
 **Post:**
 - This helps execute some logic after all stages are executed.
-- It can be very helpful to notify the team about the status of the build such as sending out notification.
+- It can be very helpful to notify the team about the status of the build such as sending **out notification**.
 
 **We have 3 post build condition:**
-    - **Always:** this will always execute no matter if the build failed or succeed.
-    - **Success:** this will execute only if the build succeeded.
-    - **Failure:** this will execute only if the build failed.
+- **Always:** this will always execute no matter if the build failed or succeed.
+- **Success:** this will execute only if the build succeeded.
+- **Failure:** this will execute only if the build failed.
 
 ```s
 pipeline {
