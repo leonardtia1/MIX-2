@@ -31,7 +31,7 @@ https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 - **Steps:** it is the specific instruction to execute the stage.
 - **Pipeline:** it is a series of tasks required to build, test and deploy an application from source control into dev, qa and prod.
 
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -45,7 +45,7 @@ pipeline {
 ```
 
 ### Pipeline structure
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -84,7 +84,7 @@ pipeline {
 ```
 
 ### Running a shell script in the pipeline
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -107,7 +107,7 @@ pipeline {
 }
 ```
 
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -157,7 +157,7 @@ pipeline {
 - **Success:** this will execute only if the build succeeded.
 - **Failure:** this will execute only if the build failed.
 
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -207,8 +207,8 @@ pipeline {
 ```
 
 ### User define variables
-* It most be in double quote like echo "Building version ${NEW_VERSION}" and not echo 'Building version ${NEW_VERSION}'
-```s
+* It most be in double quote like echo "Building version **${NEW_VERSION}**" and not echo 'Building version $**{NEW_VERSION}**'
+```groovy
 pipeline {
     agent any
     environment {
@@ -231,7 +231,7 @@ pipeline {
 * [jenkins-url][/env-vars.html/]
 * Example: http://10.0.0.3:8080/env-vars.html/
 
-```s
+```groovy
 BRANCH_NAME
 GIT_BRANCH
 GIT_URL
@@ -260,7 +260,7 @@ pipeline {
 * Example: http://10.0.0.3:8080/script
 * Hit enter, paste the code below and run
 
-```s
+```groovy
 def pluginList = new ArrayList(Jenkins.instance.pluginManager.plugins)
 pluginList.sort { it.getShortName() }.each{
   plugin -> 
@@ -284,7 +284,7 @@ pipeline-utility-steps
 ### Get credentials values
 * add _USR and _PSW on the variable that you set such as `ANSIBLE_HOST_USR` and `ANSIBLE_HOST_PSW`
 
-```s
+```groovy
 pipeline {
     agent any
     environment {
@@ -319,7 +319,7 @@ pipeline {
 
 
 ### Check out the code
-```s
+```groovy
 pipeline {
     agent any
     stages {
@@ -350,7 +350,7 @@ post {
 
 ### Email notification
 
-```s
+```groovy
 
 // Declarative //
 pipeline {
@@ -393,7 +393,7 @@ pipeline {
 
 
 ### Condictions
-```s
+```groovy
 BRANCH_NAME == "dev" || BRANCH_NAME == "prod"
 BRANCH_NAME == "dev" || BRANCH_NAME == "prod" || BRANCH_NAME == "qa"
 BRANCH_NAME == "dev" && BRANCH_NAME == "prod"
