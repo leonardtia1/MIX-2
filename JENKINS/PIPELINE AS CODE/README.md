@@ -1,12 +1,3 @@
-https://gitlab.com/nanuchi/techworld-js-docker-demo-app/-/tree/dev
-
-
-Configure Build Tools in Jenkins and Jenkinsfile | Jenkins Tutorial
-https://www.youtube.com/watch?v=L9Ite-1pEU8
-
-## jenkins configurations as code plugin
-Configuration as Code
-
 ## jenkins configurations as code links
 * [Configuration as Code](https://plugins.jenkins.io/configuration-as-code/)
 
@@ -794,6 +785,26 @@ env.BRANCH_NAME != "master" && env.BRANCH_NAME != "prod"
 env.BRANCH_NAME == "dev" && env.CODE_CHANGES == true
 ```
 
+* In this example, the code will be checkout only if the branch name is dev. If the branch name is not dev, the checkout stage will be skipped and the build will failed
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            when {
+                expression {
+                    BRANCH_NAME == "dev"
+                }
+            }
+            steps {
+              echo "Cloning the source code........" 
+            }
+        }
+    }
+}
+```
+
 
 ## Tools in Jenkinsfile
 - It provide you with build tools for your project
@@ -890,6 +901,10 @@ pipeline {
 ```
 
 ### Using external scripts in JenkinsFile
+* We can extract stages and put it in a groovy script and import it into a jenkinsfile by defining a global such as `gv` to load the script
+* We need to add this github repo before testing it
+* After test, we can click on the job number - replay - and see both the jenkinsfile and the script.
+* NB: The replay function in Jenkins help us to modify code and test it from Jenkins without actually committing the into VCS. It also helps us to see the jenkinsfile that we committed in VCS.
 
 ```groovy
 //script.groovy
@@ -911,6 +926,7 @@ return this
 ```
 
 ```groovy
+
 def gv
 
 pipeline {
