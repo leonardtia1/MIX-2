@@ -888,3 +888,96 @@ pipeline {
     }
 }
 ```
+
+### Using external scripts in JenkinsFile
+
+```groovy
+//script.groovy
+
+def CompileApp() {
+	echo echo "Compiling the application........" 
+}
+
+def BuildApp() {
+	echo "Building the application........" 
+}
+
+def TestAPP() {
+	echo "Testing the application........"  
+}
+
+def PackageApp() {
+	echo echo "Packaging the application........"  
+}
+
+def DeployApp() {
+	echo "Deploying the application........"
+	echo "Deploying version ${VERSION}"
+}
+
+return this
+```
+
+```groovy
+
+def gv
+pipeline {
+
+    agent any
+
+	parameters {
+		//string(name: 'VERSION', defaultValue: "1.30", description: "Version to be deploy to prod")
+		choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: "Version to be deploy to prod")
+		booleanParam(name: 'executeTest', defaultValue: false, description: "")
+	}
+    stages {
+        stage('init') {
+            steps {
+				script {
+					gv = load "script.groovy"
+				}
+            }
+        }
+        stage('compile') {
+            steps {
+				script {
+					gv.CompileApp()
+				}
+            }
+        }
+        stage('build') {
+            steps {
+               script {
+				   gv.BuildApp()
+			   }
+            }
+        }
+        stage('test') {
+			when {
+				expression {
+					params.executeTest
+				}
+			}
+            steps {
+               script {
+				   gv.TestAPP()
+			   }
+            }
+        }
+        stage('package') {
+            steps {
+               script {
+				   gv.PackageApp()
+			   }
+            }
+        }
+        stage('deploy') {
+            steps {
+               script {
+				   gv.DeployApp()
+			   }
+            }
+        }
+    }
+}
+```
