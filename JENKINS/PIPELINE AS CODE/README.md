@@ -894,20 +894,26 @@ pipeline {
 ```groovy
 //script.groovy
 
-def buildApp() {
-    echo 'building the application...'
-} 
+def CompileApp() {
+	echo echo "Compiling the application........" 
+}
 
-def testApp() {
-    echo 'testing the application...'
-} 
+def BuildApp() {
+	echo "Building the application........" 
+}
 
-def deployApp() {
-    echo 'deplying the application...'
-    echo "deploying version ${params.VERSION}"
-} 
+def TestAPP() {
+	echo "Testing the application........"  
+}
 
-return this
+def PackageApp() {
+	echo echo "Packaging the application........"  
+}
+
+def DeployApp() {
+	echo "Deploying the application........"
+	echo "Deploying version ${VERSION}"
+}
 ```
 
 ```groovy
@@ -917,8 +923,12 @@ def gv
 pipeline {
     agent any
     parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
-        booleanParam(name: 'executeTests', defaultValue: true, description: '')
+        agent any
+
+	parameters {
+		//string(name: 'VERSION', defaultValue: "1.30", description: "Version to be deploy to prod")
+		choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: "Version to be deploy to prod")
+		booleanParam(name: 'executeTests', defaultValue: false, description: "")
     }
     stages {
         stage("init") {
@@ -928,11 +938,18 @@ pipeline {
                 }
             }
         }
-        stage("build") {
+        stage("compile") {
             steps {
-                script {
-                    gv.buildApp()
-                }
+				script {
+					gv.CompileApp()
+				}
+            }
+        }
+        stage('build') {
+            steps {
+               script {
+				   gv.BuildApp()
+			   }
             }
         }
         stage("test") {
@@ -942,19 +959,25 @@ pipeline {
                 }
             }
             steps {
-                script {
-                    gv.testApp()
-                }
+               script {
+				   gv.TestAPP()
+			   }
+            }
+        }
+        stage('package') {
+            steps {
+               script {
+				   gv.PackageApp()
+			   }
             }
         }
         stage("deploy") {
             steps {
                 script {
-                    gv.deployApp()
+                    gv.DeployApp()
                 }
             }
         }
     }   
 }
-
 ```
