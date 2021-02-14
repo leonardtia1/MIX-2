@@ -922,27 +922,25 @@ return this
 
 def gv
 pipeline {
-
     agent any
-
 	parameters {
 		//string(name: 'VERSION', defaultValue: "1.30", description: "Version to be deploy to prod")
 		choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: "Version to be deploy to prod")
-		booleanParam(name: 'executeTest', defaultValue: false, description: "")
+		booleanParam(name: 'executeTest', defaultValue: false, description: "Execute test only if params.executeTest is set to true and skip if params.executeTest is false")
 	}
     stages {
         stage('init') {
             steps {
-				script {
-					gv = load "script.groovy"
-				}
+              script {
+				  gv = load "script.groovy"
+			  }
             }
         }
         stage('compile') {
             steps {
-				script {
-					gv.CompileApp()
-				}
+               script {
+				   gv.CompileApp()
+			   }
             }
         }
         stage('build') {
