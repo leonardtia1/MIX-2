@@ -1,6 +1,9 @@
 https://gitlab.com/nanuchi/techworld-js-docker-demo-app/-/tree/dev
 
 
+Configure Build Tools in Jenkins and Jenkinsfile | Jenkins Tutorial
+https://www.youtube.com/watch?v=L9Ite-1pEU8
+
 ## jenkins configurations as code plugin
 Configuration as Code
 
@@ -717,6 +720,7 @@ pipeline {
 
 
 ## Get credentials values
+* Install `Credential Binding plungin` first. It as takes the ID as the paramter of the credential in Jenkins.
 * add _USR and _PSW on the variable that you set such as `ANSIBLE_HOST_USR` and `ANSIBLE_HOST_PSW`
 
 ```groovy
@@ -791,3 +795,96 @@ env.BRANCH_NAME == "dev" && env.CODE_CHANGES == true
 ```
 
 
+## Tools in Jenkinsfile
+- It provide you with build tools for your project
+- There are only 3 tools that Jenkinsfile file support 
+	- Gradle
+	- Maven
+	- Jdk
+- These tools most be pre-configure or pre-install in `Global tools configuration in Jenkins`
+
+```groovy
+pipeline {
+    agent any
+	tools {
+		maven 'my_maven'
+        jdk 'my_java'
+	}
+    stages {
+		stage('Compile') {
+			steps{
+				sh 'mvn compile'
+			}
+		}
+		stage('Unit_Test') {
+			steps{
+				sh 'mvn test'
+			}
+		}
+		stage('Package') {
+			steps{
+				sh 'mvn package'
+			}
+		}
+    }
+}
+```
+
+### Parameter in JenkinsFile
+**Types of parameter:** 
+- String (name, defaultValue, description)
+- Choice (name, defaultValue, description)
+- BooleanParam (name, defaultValue, description)
+
+**params.executeTest:**
+- Execute test only if params.executeTest is set to `true` and skip if params.executeTest is `false`
+- The test will be skip because the boolean params.executeTest is set to `false`. If we set it to `true`, it will execute. `booleanParam(name: 'executeTest', defaultValue: true, description: "")`
+
+```groovy
+pipeline {
+    agent any
+	parameters {
+		//string(name: 'VERSION', defaultValue: "1.30", description: "Version to be deploy to prod")
+		choice (name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: "Version to be deploy to prod")
+		booleanParam(name: 'executeTest', defaultValue: false, description: "Execute test only if params.executeTest is set to true and skip if params.executeTest is false")
+	}
+    stages {
+        stage('Checkout') {
+            steps {
+              echo "Cloning the source code........" 
+            }
+        }
+        stage('compile') {
+            steps {
+               echo "Compiling the application........" 
+            }
+        }
+        stage('build') {
+            steps {
+               echo "Building the application........"
+            }
+        }
+        stage('test') {
+			when {
+				expression {
+					params.executeTest
+				}
+			}
+            steps {
+              echo "Testing the application........" 
+            }
+        }
+        stage('package') {
+            steps {
+               echo "Packaging the application........"
+            }
+        }
+        stage('deploy') {
+            steps {
+               echo "Deploying the application........"
+			   echo "Deploying version ${VERSION}"
+            }
+        }
+    }
+}
+```
