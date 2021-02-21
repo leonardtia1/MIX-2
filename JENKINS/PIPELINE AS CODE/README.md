@@ -11,6 +11,10 @@ https://github.com/devbyaccident/demo-shared-pipeline
 
 https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 
+
+Jenkins and Docker Build a Docker image using an jenkins pipeline and push it into docker registry
+https://www.edureka.co/community/55640/jenkins-docker-docker-image-jenkins-pipeline-docker-registry
+
 ## Some plugins in Jenkins
 - **Config AutoRefresh:** the Config AutoRefresh Plugin provides a way to configure the auto-refresh rate from the Jenkins UI.
 - configuration-as-code
@@ -21,6 +25,7 @@ https://github.com/devbyaccident/azure-voting-app-redis/blob/master/Jenkinsfile
 - maven-plugin
 - role-strategy
 - github
+- pipeline
 - pipeline-utility-steps
 - Credentials
 - Credentials Binding Plugin
@@ -192,8 +197,27 @@ pipeline {
 - **Always:** this will always execute no matter if the build failed or succeed.
 - **Success:** this will execute only if the build succeeded.
 - **Failure:** this will execute only if the build failed.
-- **changed:** this will execute only if the they is a change.
-- **unstable:** this will execute only if the build is unstable. An example is to fialed the copy an artifact to a remote server.
+- **Changed:** only run if the current Pipeline run has a different status from the previously completed
+- **Unstable:** this will execute only if the build is unstable. An example is to fialed the copy an artifact to a remote server.
+- 
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stages('Example') {
+            steps {
+               echo 'Hello World' 
+            }
+        }
+    }
+    post {
+        always {
+            echo 'I will always say Hello again!'
+        }
+    }
+}
+```
 
 ```groovy
 pipeline {
@@ -246,6 +270,40 @@ pipeline {
 
 
 ## When condition
+**when:**
+The when directive allows the Pipeline to determine whether the stage should be executed depending on the given condition.
+
+**Built-in Conditions:**
+**- branch:** Execute the stage when the branch being built matches the branch pattern given, for example: `when { branch 'master' }`
+**- environment:** Execute the stage when the specified environment variable is set to the given value, for example: `when { environment name: 'DEPLOY_TO', value: 'production' }`
+**expression:** Execute the stage when the specified Groovy expression evaluates to true.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Example Build') {
+            steps {
+               echo 'Hello World' 
+            }
+        }
+        stage('Example Deploy') {
+            when {
+               branch 'production' 
+            }
+            steps {
+                echo 'Deploying'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'I will always say Hello again!'
+        }
+    }
+}
+```
+
 * This will skip the deployment if the build failed. The deploy stage will run because the build stage will not failed
 ```groovy
 pipeline {
@@ -521,7 +579,7 @@ pipeline {
         stage('Displying some Env') {
             steps {
                 echo "The build number is: ${BUILD_NUMBER}"
-                echo "The job number is: ${JOB_NAME}"
+                echo "The job name is: ${JOB_NAME}"
                 echo "The Jenkins home directory is: ${JENKINS_HOME}"
                 echo "The Jenkins URL is: ${JENKINS_URL}"
                 echo "The build URL is: ${BUILD_URL}"
@@ -535,6 +593,18 @@ pipeline {
 
 
 ## Using multiple agents
+
+**any:** 
+Execute the Pipeline, or stage, on any available agent. For example: agent any
+
+**none:**
+When applied at the top-level of the pipeline block no global agent will be allocated for the
+entire Pipeline run and each stage directive will need to contain its own agent directive. For example: agent none
+
+**label:**
+Execute the Pipeline, or stage, on an agent available in the Jenkins environment with the
+provided label. For example: agent { label 'my-defined-label' }
+
 * In this example, job will run on any available agent including **Jenkins master server.**
 
 ```groovy
@@ -844,8 +914,46 @@ pipeline {
 ### Parameter in JenkinsFile
 **Types of parameter:** 
 - String (name, defaultValue, description)
-- Choice (name, defaultValue, description)
+    - parameters { string(name: 'DEPLOY_ENV',
+defaultValue: 'staging', description: '') }
 - BooleanParam (name, defaultValue, description)
+    - parameters { booleanParam(name: 'DEBUG_BUILD',
+defaultValue: true, description: '') }
+- Choice (name, defaultValue, description)
+
+```groovy
+pipeline {
+    agent any
+    parameters {
+        string(name: 'Greeting', defaultValue: 'Hello', description: 'How should I greet the world?')
+    }
+    stages {
+        stage('Example') {
+            steps {
+                echo "${params.Greeting} World!"
+            }
+        
+        }
+    }
+}
+```
+
+```groovy
+pipeline {
+    agent any
+    parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+    }
+    stages {
+        stage('Example') {
+            steps {
+                echo "Hello ${params.PERSON}"
+            }
+        
+        }
+    }
+}
+```
 
 **params.executeTest:**
 - Execute test only if params.executeTest is set to `true` and skip if params.executeTest is `false`
@@ -972,3 +1080,255 @@ pipeline {
     }   
 }
 ```
+
+## Building docker image with simple step
+* Install `CloudBees Docker Build and Publish` plugin
+* Add a user Jenkins to a docker group `usermod -aG docker jenkins`
+* Change the permissions of docker socket to be able to connect to the docker daemon `chmod 666 /var/run/docker.sock`
+* The dockerfile should be in VCS
+
+```sh
+From tomcat
+Maintainer Tia
+WORKDIR /usr/local/tomcat/webapps
+RUN wget https://warfiles-for-docker.s3.amazonaws.com/addressbook.war
+CMD "catalina.sh" "run"
+EXPOSE 8080
+```
+
+```
+http://10.0.0.3:[BUILD_NUMBER]/addressbook/
+```
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/leonardtia1/dockerfile.git']]]) 
+            }
+        }
+        stage('Info') {
+            steps {
+                echo "The job name is: ${JOB_NAME}"
+                echo "The workspace is: ${WORKSPACE}"
+            }   
+        }
+        stage('Change-dir') {
+            steps {
+                sh'cd ${WORKSPACE}'
+                sh 'ls'
+            }   
+        }
+        stage('Build-Image') {
+            steps {
+                sh '''
+                 #!/bin/bash
+                 cd ${WORKSPACE}
+                 ls -la
+                 docker images
+                 docker build -t \
+                    leonardtia/devops-test-repo:addressbook-$BUILD_NUMBER .
+                 docker images
+                ''' 
+            }   
+        }
+        stage('Run-Image') {
+            steps {
+                sh '''
+                 #!/bin/bash
+                 docker images
+                 docker run \
+                    -d \
+                    -p 800$BUILD_NUMBER:8080 \
+                    --name=addressbook-$BUILD_NUMBER \
+                    leonardtia/devops-test-repo:addressbook-$BUILD_NUMBER
+                docker ps
+                ''' 
+            }   
+        }
+    }
+}
+```
+
+## Building docker image with Advance step
+* [Jenkins and Docker Build a Docker image using an jenkins pipeline and push it into docker registry](https://www.edureka.co/community/55640/jenkins-docker-docker-image-jenkins-pipeline-docker-registry)
+
+* Install `CloudBees Docker Build and Publish` plugin
+* Add a user Jenkins to a docker group `usermod -aG docker jenkins`
+* Change the permissions of docker socket to be able to connect to the docker daemon `chmod 666 /var/run/docker.sock`
+
+```sh
+From tomcat
+Maintainer Tia
+WORKDIR /usr/local/tomcat/webapps
+RUN wget https://warfiles-for-docker.s3.amazonaws.com/addressbook.war
+CMD "catalina.sh" "run"
+EXPOSE 8080
+```
+
+```
+http://10.0.0.3:[BUILD_NUMBER]/addressbook/
+```
+
+```groovy
+pipeline {
+    agent any
+    environment {
+    registry = 'leonardtia/devops-test-repo'
+    registryCredential = 'docker-hub'
+    dockerImage = ''
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/leonardtia1/dockerfile.git']]]) 
+            }
+        }
+        stage('Building image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":addressbook-$BUILD_NUMBER"
+                }
+            }   
+        }
+        stage('Running Image') {
+            steps {
+                sh '''
+                 #!/bin/bash
+                 docker images
+                 docker run \
+                    -d \
+                    -p 80$BUILD_NUMBER:8080 \
+                    --name=addressbook-$BUILD_NUMBER \
+                    leonardtia/devops-test-repo:addressbook-$BUILD_NUMBER
+                docker ps
+                ''' 
+            }   
+        }
+        stage('Deploying Image') {
+            steps {
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
+                    }
+                }
+            }
+        }
+        stage('Remove Unused docker image') {
+            steps {
+                sh "docker rmi --force $registry:addressbook-$BUILD_NUMBER"
+                sh "docker images"
+                sh "docker ps"
+            }
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Triggers in Jenkinsfile
+- The triggers directive defines the automated ways in which the Pipeline should be re-triggered
+- Currently the only two
+available triggers are cron and pollSCM.
+
+**cron:**
+Accepts a cron-style string to define a regular interval at which the Pipeline should be retriggered, for example: triggers `{ cron('H 4/* 0 0 1-5') }`
+
+**pollSCM:**
+Accepts a cron-style string to define a regular interval at which Jenkins should check for new
+source changes. If new changes exist, the Pipeline will be re-triggered. For example: triggers {
+`pollSCM('H 4/* 0 0 1-5') }`
+
+**NOTE:** The pollSCM trigger is only available in Jenkins 2.22 or later
+
+```groovy
+pipeline {
+    agent any
+    triggers {
+        cron('H 4/* 0 0 1-5')
+    }
+    stages {
+        stages('Example') {
+            steps {
+               echo 'Hello World' 
+            }
+        }
+    }
+    post {
+        always {
+            echo 'I will always say Hello again!'
+        }
+    }
+}
+```
+
+
+
+## Blue Ocean
+- Blue Ocean can be installed in an existing Jenkins environment or be run with Docker.
+- To start using the plugin:blue-ocean[Blue Ocean plugin] in an existing Jenkins environment, it must be running Jenkins `2.7.x or later.`:
+    1. Login to your Jenkins server
+    2. Click Manage Jenkins in the sidebar then Manage Plugins
+    3. Choose the Available tab and use the search bar to find Blue Ocean
+    4. Click the checkbox in the Install column
+    5. Click either Install without restart or Download now and install after restart
+
+**With Docker:**
+- To start a new Jenkins with Blue Ocean pre-installed:
+    1. Ensure Docker is installed.
+    2. Run docker run -p 8888:8080 jenkinsci/blueocean:latest
+    3. Browse to localhost:8888/blue
+
+
+## General Terms
+**- Agent:** An agent is typically a machine, or container, which connects to a Jenkins master and executes tasks when directed by the master.
+
+**Artifact:** An immutable file generated during a Build or Pipeline run which is archived onto the Jenkins Master for later retrieval by users.
+
+**Build:** Result of a single execution of a Project
+
+**Folder** An organizational container for Pipelines and/or Projects, similar to folders on a file system.
+
+**Job:** A deprecated term, synonymous with Project.
+
+**Master:** The central, coordinating process which stores configuration, loads plugins, and renders the various user interfaces for Jenkins.
+
+**Node:** A machine which is part of the Jenkins environment and capable of executing Pipelines or Projects. Both the Master and Agents are considered to be Nodes.
+
+**Project:** A user-configured description of work which Jenkins should perform, such as building a piece of software, etc.
+
+**Pipeline:** A user-defined model of a continuous delivery pipeline
+
+**Plugin:** An extension to Jenkins functionality provided separately from Jenkins
+
+**Trigger:** A criteria for triggering a new Pipeline run or Build.
+
+**Step:** A single task; fundamentally steps tell Jenkins what to do inside of a Pipeline or Project
+
+**Workspace:** A disposable directory on the file system of a Node where work can be done by a Pipeline or Project. Workspaces are typically left in place after a Build or Pipeline run completes unless specific Workspace cleanup policies have been put in place on the Jenkins Master.
+
+**Upstream:** A configured Pipeline or Project which triggers a separate Pipeline or Project as part of its
+execution.
+
+**Downstream:** A configured Pipeline or Project which is triggered as part of the execution of a separate Pipeline
+or Project.
