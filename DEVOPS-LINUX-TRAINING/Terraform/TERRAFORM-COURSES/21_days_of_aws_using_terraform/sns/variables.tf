@@ -1,1 +1,0 @@
-variable "alarms_email" {}
